@@ -1,0 +1,222 @@
+<div>
+<script type="text/javascript", src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.bundle.min.js"></script>
+
+    <div class="wrapper">
+    
+    <div class="menu" align="center">
+  <select id="country" class="selects" name="Country" onchange="changecountry()">
+    <option selected="Select a Country">Select a Country</option>
+    <option value="El Salvador">EL SALVADOR</option>
+    <option value="Colombia">COLOMBIA</option>
+    <option value="Senegal">SENEGAL</option>
+    <option value="Kenya">KENYA</option>
+    <option value="India">INDIA</option>
+    <option value="Indonesia">INDONESIA</option>
+  </select>
+  <select id="indicator" class="selects" name="Indicator" onchange="changeindicator()">
+    <option selected="Select a Indicator">Select a Indicator</option>
+    <option value="Married women currently using any method of contraception">Married women currently using any method of contraception</option>
+    <option value="Married women currently using any modern method of contraception">Married women currently using any modern method of contraception</option>
+    <option value="Unmet need for family planning">Unmet need for family planning</option>
+    <option value="Demand for family planning satisfied by modern methods">Demand for family planning satisfied by modern methods</option>
+    <option value="Pregnancy-related mortality ratio">Pregnancy-related mortality ratio</option>
+    <option value="Maternal mortality ratio">Maternal mortality ratio</option>
+    <option value="Women circumcised (FGC)">Women circumcised (FGC)</option>
+    <option value="Physical or sexual violence committed by husband/partner">Physical or sexual violence committed by husband/partner</option>
+    <option value="Women who are literate">Women who are literate</option>
+    <option value="Women with secondary or higher education">Women with secondary or higher education</option>
+    <option value="Women first married by exact age 15">Women first married by exact age 15</option>
+    <option value="Women first married by exact age 18">Women first married by exact age 18</option>
+    <option value="Married women participating in all three decisions">Married women participating in all three decisions</option>
+    <option value="Married women who disagree with all the reasons justifying wife beating">Married women who disagree with all the reasons justifying wife beating</option>
+    <option value="Sexual violence before exact age 18">Sexual violence before exact age 18</option>
+    <option value="Median years of education completed [Women]">Median years of education completed [Women]</option>
+    <option value="Women who worked in the last 12 months and are currently">Women who worked in the last 12 months and are currently</option>
+    <option value="Net primary school attendance rate: Female">Net primary school attendance rate: Female</option>
+    <option value="Wife beating justified for at least one specific reason [Women]">Wife beating justified for at least one specific reason [Women]</option>
+    <option value="No antenatal care">No antenatal care</option>
+    <option value="General fertility rate">General fertility rate</option>
+    <option value="Women giving birth by age 15">Women giving birth by age 15</option>
+    <option value="Women giving birth by age 18">Women giving birth by age 18</option>
+    <option value="Women who decide themselves how their earnings are used">Women who decide themselves how their earnings are used</option>
+    <option value="Women who decide jointly with partner how their earnings are used">Women who decide jointly with partner how their earnings are used</option>
+    <option value="Wife earns more than husband">Wife earns more than husband</option>
+    <option value="ICF International, 2015. The DHS Program STATcompiler. Funded by USAID. https://www.statcompiler.com. November 16 2017">ICF International, 2015. The DHS Program STATcompiler. Funded by USAID. https://www.statcompiler.com. November 16 2017</option>
+  </select>
+  <select id="age_group" class="selects" name="Age Groups">
+    <option selected="Age Groups">Age Groups</option>
+    
+  </select>
+  <select id="year" class="selects" name="Year" onchange="changeyear()">
+    <option selected="Year">Year</option>
+
+  </select>
+  <button id="searchbutton" class="selects" type="button" onclick="loadDoc()">Search!</button>
+</div>
+<div id="graph-container" align="center">
+  <canvas id="myChart" width="500" height="500" style="border:1px solid #000000;"></canvas>
+</div>
+  <script>
+
+    function ClearOptions(id){
+      document.getElementById(id).options.length = 1;
+    }
+    function changecountry() {
+      ClearOptions("year")
+      ClearOptions("age_group")
+      var Indicator = document.getElementById("indicator").value
+      if(Indicator != "Select a Indicator"){
+        var xhttp = new XMLHttpRequest();
+          xhttp.onreadystatechange = function() {
+            if (this.readyState == XMLHttpRequest && this.status == 200) {
+                document.getElementById("country").innerHTML = this.responseText;
+            }
+          };
+          var Country = document.getElementById("country").value
+          xhttp.open("GET","http://localhost:5000/possibleyears/"+Country+"/"+Indicator, false);
+          xhttp.setRequestHeader( 'Access-Control-Allow-Headers', '*' );
+          xhttp.setRequestHeader( 'Content-Type', 'application/javascript' );
+          xhttp.setRequestHeader( 'Access-Control-Allow-Origin', '*' );
+          xhttp.send();
+
+          var x = document.getElementById("year");
+
+          var js = JSON.parse(xhttp.responseText);
+          for(var i=0 ; i < js.length; i++){
+            var option = document.createElement("OPTION");
+            option.setAttribute("value", js[i]);
+            var t = document.createTextNode(js[i]);
+            option.appendChild(t);
+            option.text = js[i];
+            x.appendChild(option);
+          }
+      }
+    }
+
+    function changeindicator() {
+      ClearOptions("year")
+      ClearOptions("age_group")
+      var Country = document.getElementById("country").value
+      if(Country != "Select a Country"){
+        var xhttp = new XMLHttpRequest();
+          xhttp.onreadystatechange = function() {
+            if (this.readyState == XMLHttpRequest && this.status == 200) {
+                document.getElementById("indicator").innerHTML = this.responseText;
+            }
+          };
+          var Indicator = document.getElementById("indicator").value
+          xhttp.open("GET","http://localhost:5000/possibleyears/"+Country+"/"+Indicator, false);
+          xhttp.setRequestHeader( 'Access-Control-Allow-Headers', '*' );
+          xhttp.setRequestHeader( 'Content-Type', 'application/javascript' );
+          xhttp.setRequestHeader( 'Access-Control-Allow-Origin', '*' );
+          xhttp.send();
+
+          var x = document.getElementById("year");
+
+          var js = JSON.parse(xhttp.responseText);
+
+          for(var i=0 ; i < js.length; i++){
+            var option = document.createElement("OPTION");
+            option.setAttribute("value", js[i]);
+            var t = document.createTextNode(js[i]);
+            option.appendChild(t);
+            option.text = js[i];
+            x.appendChild(option);
+          }
+      }
+    }
+
+    function changeyear() {
+        ClearOptions("age_group")
+        var xhttp = new XMLHttpRequest();
+          xhttp.onreadystatechange = function() {
+            if (this.readyState == XMLHttpRequest && this.status == 200) {
+                document.getElementById("year").innerHTML = this.responseText;
+            }
+          };
+          var Country = document.getElementById("country").value
+          var Indicator = document.getElementById("indicator").value
+          var Year = document.getElementById("year").value
+          xhttp.open("GET","http://localhost:5000/possiblegroups/"+Country+"/"+Indicator+"/"+Year, false);
+          xhttp.setRequestHeader( 'Access-Control-Allow-Headers', '*' );
+          xhttp.setRequestHeader( 'Content-Type', 'application/javascript' );
+          xhttp.setRequestHeader( 'Access-Control-Allow-Origin', '*' );
+          xhttp.send();
+
+          var x = document.getElementById("age_group");
+
+          var js = JSON.parse(xhttp.responseText);
+
+          for(var i=0 ; i < js.length; i++){
+            var option = document.createElement("OPTION");
+            option.setAttribute("value", js[i]);
+            var t = document.createTextNode(js[i]);
+            option.appendChild(t);
+            option.text = js[i];
+            x.appendChild(option);
+          }
+    }
+
+    function loadDoc() {
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+          if (this.readyState == XMLHttpRequest && this.status == 200) {
+            document.getElementById("searchbutton").innerHTML = this.responseText;
+          }
+        };
+        var Country = document.getElementById("country").value
+        var Indicator = document.getElementById("indicator").value
+        var Age_group = document.getElementById("age_group").value
+        var Year = document.getElementById("year").value
+
+      xhttp.open("GET","http://localhost:5000/oneCountryOverTime/"+Indicator+"/"+Country+"/"+Age_group, false);
+        xhttp.setRequestHeader( 'Access-Control-Allow-Headers', '*' );
+        xhttp.setRequestHeader( 'Content-Type', 'application/javascript' );
+        xhttp.setRequestHeader( 'Access-Control-Allow-Origin', '*' );
+        xhttp.send();
+      var js = JSON.parse(xhttp.responseText);
+      $('#myChart').remove();
+      $('#graph-container').append('<canvas id="myChart" width="500" height="500" style="border:1px solid #000000;"><canvas>');
+      var ctx = document.getElementById("myChart").getContext('2d');
+      var myChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: js[0],
+            datasets: [{
+                //label: Indicator,
+                data: js[1],
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.2)',
+                ],
+                borderColor: [
+                    'rgba(255,99,132,1)',
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+          legend: {
+              display: false
+          },
+          tooltips: {
+            callbacks: {
+              label: function(tooltipItem) {
+                return tooltipItem.yLabel;
+              }
+            }
+          },
+          scales: {
+            yAxes: [{
+              ticks: {
+                beginAtZero:true
+              }
+            }]
+          },
+          responsive: false
+        }
+      });
+    }
+  </script>
+    </div>
+    
+</div>
