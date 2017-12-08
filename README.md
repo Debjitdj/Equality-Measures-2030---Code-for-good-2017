@@ -75,7 +75,7 @@ There are *four* pages that we have made-
 
 ## Contributing
 
-Please read [CONTRIBUTING.md](https://) for details on our code of conduct, and the process for submitting pull requests to us.
+Please read [CONTRIBUTING.md](https://github.com/Debjitdj/Equality-Measures-2030---Code-for-good-2017/blob/master/CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests to us.
 
 ## Versioning
 
